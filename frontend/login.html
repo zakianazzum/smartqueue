@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>SmartQueue - Staff Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-blue-50">
+
+<div class="flex items-center justify-center h-screen">
+    <div class="bg-white rounded-lg shadow w-80 p-6">
+
+        <div class="w-5 h-5 bg-blue-600 rounded-full mb-4"></div>
+
+        <div class="font-bold text-gray-800">Staff Login</div>
+        <div class="text-xs text-gray-500 mb-4">Log in to open the Admin Panel.</div>
+
+        <div class="text-xs text-gray-500 mb-1">EMAIL</div>
+        <input id="email" type="text" value="staff@demo.com"
+               class="w-full border rounded px-3 py-2 text-sm mb-3">
+
+        <div class="text-xs text-gray-500 mb-1">PASSWORD</div>
+        <input id="password" type="password" value="1234"
+               class="w-full border rounded px-3 py-2 text-sm mb-4">
+
+        <div id="errorBox" class="hidden bg-red-100 text-red-700 text-sm rounded p-2 mb-3"></div>
+
+        <button onclick="doLogin()"
+                class="w-full bg-blue-600 text-white rounded py-2 text-sm hover:bg-blue-700">
+            Log In
+        </button>
+
+        <a href="index.html" class="block text-center text-xs text-gray-500 mt-4">
+            Back to Customer page
+        </a>
+    </div>
+</div>
+
+<script>
+function doLogin() {
+    fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            email: document.getElementById("email").value,
+            password: document.getElementById("password").value
+        })
+    })
+    .then(function (r) {
+        if (r.status == 401) {
+            document.getElementById("errorBox").className =
+                "bg-red-100 text-red-700 text-sm rounded p-2 mb-3";
+            document.getElementById("errorBox").innerHTML = "Wrong email or password";
+            return null;
+        }
+        return r.json();
+    })
+    .then(function (user) {
+        if (user == null) return;
+        localStorage.setItem("staff_name", user.name);
+        window.location.href = "admin.html";
+    });
+}
+
+// let the user press Enter to log in
+document.getElementById("password").onkeydown = function (e) {
+    if (e.key == "Enter") doLogin();
+};
+</script>
+
+</body>
+</html>

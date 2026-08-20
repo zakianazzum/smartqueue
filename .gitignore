@@ -1,0 +1,7 @@
+# postgres container data folder
+database/
+
+__pycache__/
+*.pyc
+.venv/
+venv/

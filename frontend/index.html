@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>SmartQueue - Customer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-blue-50">
+
+<div class="flex h-screen">
+
+    <!-- sidebar -->
+    <div class="w-52 bg-white flex flex-col border-r">
+        <div class="p-5">
+            <div class="w-5 h-5 bg-blue-600 rounded-full"></div>
+        </div>
+        <div class="px-3 space-y-1">
+            <a href="index.html" class="block px-3 py-2 rounded bg-blue-600 text-white text-sm">Customer</a>
+            <a href="admin.html" class="block px-3 py-2 rounded text-gray-600 text-sm hover:bg-gray-100">Admin Panel</a>
+            <a href="counter.html" class="block px-3 py-2 rounded text-gray-600 text-sm hover:bg-gray-100">Counter View</a>
+        </div>
+        <div class="mt-auto p-4 border-t">
+            <div id="clock" class="text-xs text-gray-500 mb-2">00:00:00</div>
+            <a href="login.html" class="text-sm text-gray-600 hover:text-blue-600">Log Out</a>
+        </div>
+    </div>
+
+    <!-- main area -->
+    <div class="flex-1 overflow-auto p-8">
+        <div class="max-w-md mx-auto">
+
+            <!-- blue step header -->
+            <div class="bg-blue-600 text-white rounded-t-lg p-4">
+                <div class="flex justify-between items-center mb-3">
+                    <div class="w-4 h-4 bg-blue-400 rounded"></div>
+                    <div id="stepLabel" class="text-xs">Step 1/4</div>
+                </div>
+                <div class="flex text-xs">
+                    <div id="tab1" class="flex-1 text-center pb-1 border-b-2 border-white">Service</div>
+                    <div id="tab2" class="flex-1 text-center pb-1 border-b-2 border-blue-500 text-blue-200">Location</div>
+                    <div id="tab3" class="flex-1 text-center pb-1 border-b-2 border-blue-500 text-blue-200">Token</div>
+                    <div id="tab4" class="flex-1 text-center pb-1 border-b-2 border-blue-500 text-blue-200">Tracking</div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-b-lg p-6 shadow">
+
+                <!-- STEP 1 : choose service (FR-01) -->
+                <div id="step1">
+                    <div class="font-bold text-gray-800">Choose a Service</div>
+                    <div class="text-xs text-gray-500 mb-4">Select the type of service you need assistance with.</div>
+                    <div id="serviceList" class="grid grid-cols-2 gap-3">
+                        <div class="text-sm text-gray-400">Loading...</div>
+                    </div>
+                </div>
+
+                <!-- STEP 2 : choose location (FR-02) -->
+                <div id="step2" class="hidden">
+                    <div class="font-bold text-gray-800">Select Location</div>
+                    <div class="text-xs text-gray-500 mb-4">Choose the branch you want to visit.</div>
+                    <div id="locationList" class="space-y-2"></div>
+                    <button onclick="goBackToServices()" class="mt-4 text-sm text-blue-600">&larr; Back</button>
+                </div>
+
+                <!-- STEP 3 : get token (FR-03) -->
+                <div id="step3" class="hidden">
+                    <div class="font-bold text-gray-800">Get Your Token</div>
+                    <div class="text-xs text-gray-500 mb-4">Confirm your details to join the queue.</div>
+
+                    <div class="bg-blue-50 rounded p-3 mb-4 text-sm">
+                        <div class="text-gray-500 text-xs">SERVICE</div>
+                        <div id="pickedService" class="text-gray-800 mb-2"></div>
+                        <div class="text-gray-500 text-xs">LOCATION</div>
+                        <div id="pickedLocation" class="text-gray-800"></div>
+                    </div>
+
+                    <div class="text-xs text-gray-500 mb-1">YOUR NAME</div>
+                    <input id="customerName" type="text" placeholder="Enter your name"
+                           class="w-full border rounded px-3 py-2 text-sm mb-4">
+
+                    <button onclick="getToken()"
+                            class="w-full bg-blue-600 text-white rounded py-2 text-sm hover:bg-blue-700">
+                        Get My Token
+                    </button>
+                    <button onclick="goBackToLocations()" class="mt-3 text-sm text-blue-600">&larr; Back</button>
+                </div>
+
+                <!-- STEP 4 : live tracking (FR-04, FR-05, FR-06) -->
+                <div id="step4" class="hidden">
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="font-bold text-gray-800">Live Status</div>
+                        <button onclick="loadTracking()" class="text-xs text-blue-600">&#8635; Refresh</button>
+                    </div>
+
+                    <!-- shown when staff marks the counter busy (SRS 9) -->
+                    <div id="pausedBox" class="hidden bg-orange-100 border border-orange-300 rounded p-3 mb-3 text-sm text-orange-800">
+                        Service is temporarily paused by the staff. Your waiting time may change.
+                    </div>
+
+                    <!-- shown when it is this customer's turn -->
+                    <div id="yourTurnBox" class="hidden bg-green-100 border border-green-300 rounded p-3 mb-3 text-sm text-green-800">
+                        It is your turn now. Please go to the counter.
+                    </div>
+
+                    <div class="border rounded-lg p-6 text-center mb-3">
+                        <div class="text-xs text-gray-500 tracking-widest">CURRENTLY SERVING</div>
+                        <div id="nowServing" class="text-4xl font-mono font-bold text-blue-600">--</div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 mb-3">
+                        <div class="bg-blue-50 rounded p-3 text-center">
+                            <div class="text-xs text-gray-500">Your Token</div>
+                            <div id="myToken" class="font-mono font-bold text-gray-800">--</div>
+                        </div>
+                        <div class="bg-blue-50 rounded p-3 text-center">
+                            <div class="text-xs text-gray-500">Position</div>
+                            <div id="myPosition" class="font-bold text-gray-800">--</div>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 rounded p-3 mb-3">
+                        <div class="text-xs text-gray-500">&#9200; ESTIMATED WAITING TIME</div>
+                        <div id="waitTime" class="text-xl font-mono font-bold text-blue-700">--</div>
+                        <div id="avgNote" class="text-xs text-gray-500"></div>
+                    </div>
+
+                    <div class="border rounded p-3 mb-4">
+                        <div class="text-xs text-gray-500 mb-2">AHEAD OF YOU</div>
+                        <div id="aheadList" class="flex flex-wrap gap-2 text-xs"></div>
+                    </div>
+
+                    <button onclick="newTicket()"
+                            class="w-full border border-gray-300 rounded py-2 text-sm text-gray-700 hover:bg-gray-50">
+                        Get a New Ticket
+                    </button>
+                </div>
+
+            </div>
+
+            <div class="text-center text-xs text-gray-400 mt-3">
+                Queue updates when staff marks changes in the Admin Panel
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>SmartQueue - Admin Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-blue-50">
+
+<div class="flex h-screen">
+
+    <!-- sidebar -->
+    <div class="w-52 bg-white flex flex-col border-r">
+        <div class="p-5">
+            <div class="w-5 h-5 bg-blue-600 rounded-full"></div>
+        </div>
+        <div class="px-3 space-y-1">
+            <a href="index.html" class="block px-3 py-2 rounded text-gray-600 text-sm hover:bg-gray-100">Customer</a>
+            <a href="admin.html" class="block px-3 py-2 rounded bg-blue-600 text-white text-sm">Admin Panel</a>
+            <a href="counter.html" class="block px-3 py-2 rounded text-gray-600 text-sm hover:bg-gray-100">Counter View</a>
+        </div>
+        <div class="mt-auto p-4 border-t">
+            <div id="clock" class="text-xs text-gray-500 mb-2">00:00:00</div>
+            <a href="#" onclick="logout()" class="text-sm text-gray-600 hover:text-blue-600">Log Out</a>
+        </div>
+    </div>
+
+    <!-- main area -->
+    <div class="flex-1 overflow-auto">
+
+        <!-- top bar -->
+        <div class="bg-white border-b px-6 py-3 flex justify-between items-center">
+            <div class="font-bold text-gray-800">Admin / Staff Panel</div>
+            <div class="flex items-center gap-3">
+                <select id="locationSelect" onchange="changeLocation()"
+                        class="border rounded px-2 py-1 text-sm text-gray-700"></select>
+                <span id="staffName" class="text-sm text-gray-500"></span>
+            </div>
+        </div>
+
+        <div class="p-6">
+
+            <!-- the 3 stat cards -->
+            <div class="grid grid-cols-3 gap-4 mb-4">
+                <div class="bg-blue-600 text-white rounded-lg p-4">
+                    <div class="text-xs text-blue-200">CURRENTLY SERVING</div>
+                    <div id="nowServing" class="text-3xl font-mono font-bold">--</div>
+                    <div id="servingCounter" class="text-xs text-blue-200">-</div>
+                </div>
+                <div class="bg-white rounded-lg p-4 shadow">
+                    <div class="text-xs text-gray-500">QUEUE LENGTH</div>
+                    <div id="queueLength" class="text-3xl font-bold text-gray-800">0</div>
+                    <div class="text-xs text-gray-500">waiting tokens</div>
+                </div>
+                <div class="bg-white rounded-lg p-4 shadow">
+                    <div class="text-xs text-gray-500">AVG. SERVICE TIME</div>
+                    <div id="avgTime" class="text-3xl font-bold text-gray-800">0</div>
+                    <div class="text-xs text-gray-500">mins per customer</div>
+                </div>
+            </div>
+
+            <!-- live queue table (FR-11) -->
+            <div class="bg-white rounded-lg shadow p-4">
+
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <div class="font-bold text-gray-800">Live Queue</div>
+                        <div id="activeCount" class="text-xs text-gray-500">0 active tokens</div>
+                    </div>
+                    <button id="busyButton" onclick="toggleBusy()"
+                            class="border border-orange-300 text-orange-700 rounded px-3 py-1 text-sm hover:bg-orange-50">
+                        &#9888; Mark Counter as Busy
+                    </button>
+                </div>
+
+                <!-- shown when the counter is marked busy (FR-09 / SRS 9) -->
+                <div id="pausedBox" class="hidden bg-orange-100 border border-orange-300 rounded p-3 mb-3 text-sm text-orange-800">
+                    This counter is marked busy. Customers can see the service is paused.
+                </div>
+
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="text-xs text-gray-500 border-b">
+                            <th class="text-left py-2">TOKEN NO.</th>
+                            <th class="text-left py-2">STATUS</th>
+                            <th class="text-left py-2">COUNTER</th>
+                            <th class="text-left py-2">TIME</th>
+                            <th class="text-left py-2">EST. WAIT</th>
+                        </tr>
+                    </thead>
+                    <tbody id="queueTable"></tbody>
+                </table>
+
+                <!-- call next token (FR-07, FR-08) -->
+                <div class="border-t mt-4 pt-4">
+                    <div class="text-xs text-gray-500">CALL NEXT TOKEN</div>
+                    <div class="text-xs text-gray-400 mb-2">Move to Serving</div>
+                    <div class="flex gap-3 items-center">
+                        <input id="nextTokenBox" type="text" readonly
+                               class="flex-1 border rounded px-3 py-2 text-sm bg-gray-50 font-mono text-gray-700">
+                        <select id="counterSelect" class="border rounded px-2 py-2 text-sm text-gray-700"></select>
+                        <button onclick="callNext()"
+                                class="bg-blue-600 text-white rounded px-4 py-2 text-sm hover:bg-blue-700">
+                            &#9711; Call Next &rsaquo;
+                        </button>
+                    </div>
+                    <div id="message" class="text-xs text-gray-500 mt-2"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="admin.js"></script>
+</body>
+</html>
