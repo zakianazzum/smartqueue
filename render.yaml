@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: smartqueue
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: smartqueue-db
+          property: connectionString
+
+databases:
+  - name: smartqueue-db
+    databaseName: smartqueue
+    user: smartqueue

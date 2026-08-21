@@ -9,18 +9,23 @@ import psycopg2.extras
 
 app = FastAPI(title="SmartQueue API")
 
-# Database settings
-DB_HOST = "localhost"
-DB_PORT = 5432
-DB_NAME = "smartqueue"
-DB_USER = "smartqueue"
-DB_PASS = "12345678"
+DATABASE_URL = os.getenv("DATABASE_URL")
+DB_HOST = os.getenv("DB_HOST", "localhost")
+DB_PORT = int(os.getenv("DB_PORT", "5432"))
+DB_NAME = os.getenv("DB_NAME", "smartqueue")
+DB_USER = os.getenv("DB_USER", "smartqueue")
+DB_PASS = os.getenv("DB_PASS", "12345678")
 
 # If there are no service records yet we use this default (SRS 8.2 example)
 DEFAULT_SERVICE_TIME = 7.5
 
 
 def get_conn():
+    if DATABASE_URL:
+        return psycopg2.connect(
+            DATABASE_URL,
+            cursor_factory=psycopg2.extras.RealDictCursor,
+        )
     return psycopg2.connect(
         host=DB_HOST, port=DB_PORT, dbname=DB_NAME,
         user=DB_USER, password=DB_PASS,

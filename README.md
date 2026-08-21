@@ -44,7 +44,7 @@ pip install -r backend/requirements.txt
 
 ```
 cd backend
-python -m uvicorn main:app --port 8000
+python -m uvicorn main:app --host 0.0.0.0 --port 8000
 ```
 
 **5. Open the app**
@@ -64,6 +64,24 @@ start and no CORS setup is needed.
 
 Note: `--reload` does not always pick up file changes on Windows. After editing
 `main.py`, stop the server with Ctrl+C and start it again.
+
+## Deploy on Render
+
+The repository includes `render.yaml` for a Render web service and PostgreSQL
+database. In Render, create a Blueprint from this repository. The web service
+uses Render's required `PORT` value and binds to `0.0.0.0`; the database is
+passed through `DATABASE_URL`.
+
+After the database is created, apply the schema and demo data once using the
+database's external connection string:
+
+```
+psql "$DATABASE_URL" -f backend/schema.sql
+```
+
+Do not add a fixed public port. Render assigns the web port through `PORT`, and
+the frontend uses relative `/api/...` URLs, so it follows the deployed service
+automatically.
 
 ## Demo walkthrough
 
