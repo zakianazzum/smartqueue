@@ -139,7 +139,7 @@ Example: 3 customers ahead x 7.5 minutes = 22.5, shown as **23 mins**.
 | FR-11 | Live Queue Display | `GET /api/queue` - admin Live Queue table |
 | FR-12 | Counter Display | `GET /api/queue` - counter view page |
 
-Service interruption handling (SRS section 9) is covered by FR-09 and FR-10: the
+Service interruption handling: the
 status changes, the customer is told with a message on the tracking page and the
 counter display, and the waiting time is recalculated from the counter status.
 
@@ -160,15 +160,4 @@ frontend/
   counter.js
 ```
 
-## Not included
 
-These are marked Could Have or Future Enhancements in the SRS (sections 4 and 14):
-
-- SMS and push notifications
-- Machine-learning based prediction (section 8.3). The system uses the average
-  based formula from section 8.2, which the SRS gives as the initial method.
-- Historical analytics dashboards
-- Mobile application
-
-The staff login checks the email and password against the `users` table but does
-not hash passwords or use sessions. It is enough for the demo, not for real use.
